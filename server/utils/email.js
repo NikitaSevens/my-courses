@@ -1,9 +1,23 @@
 import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM = 'My-Course <onboarding@resend.dev>'
 const CLIENT_URL = process.env.CLIENT_URL || 'https://my-courses-production.up.railway.app'
+
+function createGmailTransport() {
+  return nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS?.replace(/\s/g, ''),
+    },
+    tls: { rejectUnauthorized: false, servername: 'smtp.gmail.com' },
+  })
+}
 
 export async function sendVerificationEmail(to, token) {
   const link = `${CLIENT_URL}/verify-email?token=${token}`
@@ -46,20 +60,12 @@ export async function sendPasswordResetEmail(to, token) {
 }
 
 export async function sendDocumentEmail(to, attachmentPath, courseName) {
-  const { readFileSync } = await import('fs')
-  const { basename } = await import('path')
-
-  const content = readFileSync(attachmentPath)
-
-  const result = await resend.emails.send({
-    from: FROM,
+  const transporter = createGmailTransport()
+  await transporter.sendMail({
+    from: `"My-Course" <${process.env.GMAIL_USER}>`,
     to,
     subject: `Заявка на курс: ${courseName}`,
     html: `<p>Во вложении заявка на курс <strong>${courseName}</strong>. Распечатайте, проверьте данные и подпишите.</p>`,
-    attachments: [{
-      filename: basename(attachmentPath),
-      content,
-    }],
+    attachments: [{ filename: 'zayavka.docx', path: attachmentPath }],
   })
-  return result
 }
