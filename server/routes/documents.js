@@ -35,11 +35,12 @@ router.post('/send', async (req, res) => {
     await generateDocxFromTemplate(data, filePath)
 
     const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER
-    console.log('Отправка документа на:', adminEmail)
-    const emailResult = await sendDocumentEmail(adminEmail, filePath, data.courseName || data.course || 'Курс')
-    console.log('Результат отправки:', JSON.stringify(emailResult))
 
-    fs.unlinkSync(filePath)
+    // Отправка в фоне — не блокирует ответ
+    sendDocumentEmail(adminEmail, filePath, data.courseName || data.course || 'Курс')
+      .then(() => console.log('Документ отправлен на:', adminEmail))
+      .catch(err => console.error('Ошибка отправки письма:', err.message))
+      .finally(() => { try { fs.unlinkSync(filePath) } catch {} })
 
     if (data.userId && data.courseId) {
       await prisma.document.create({
