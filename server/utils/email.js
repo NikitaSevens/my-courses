@@ -46,17 +46,20 @@ export async function sendPasswordResetEmail(to, token) {
 }
 
 export async function sendDocumentEmail(to, attachmentPath, courseName) {
-  const { createReadStream } = await import('fs')
+  const { readFileSync } = await import('fs')
   const { basename } = await import('path')
 
-  await resend.emails.send({
+  const content = readFileSync(attachmentPath)
+
+  const result = await resend.emails.send({
     from: FROM,
     to,
     subject: `Заявка на курс: ${courseName}`,
     html: `<p>Во вложении заявка на курс <strong>${courseName}</strong>. Распечатайте, проверьте данные и подпишите.</p>`,
     attachments: [{
       filename: basename(attachmentPath),
-      content: createReadStream(attachmentPath),
+      content,
     }],
   })
+  return result
 }

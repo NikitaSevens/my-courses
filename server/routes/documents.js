@@ -35,7 +35,9 @@ router.post('/send', async (req, res) => {
     await generateDocxFromTemplate(data, filePath)
 
     const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER
-    await sendDocumentEmail(adminEmail, filePath, data.courseName || data.course || 'Курс')
+    console.log('Отправка документа на:', adminEmail)
+    const emailResult = await sendDocumentEmail(adminEmail, filePath, data.courseName || data.course || 'Курс')
+    console.log('Результат отправки:', JSON.stringify(emailResult))
 
     fs.unlinkSync(filePath)
 
