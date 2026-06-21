@@ -16,11 +16,12 @@ const Login = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (login(form.username, form.password)) {
+    try {
+      await login(form.username, form.password);
       navigate("/admin", { replace: true });
-    } else {
+    } catch {
       setError("Неверный логин или пароль");
     }
   };
