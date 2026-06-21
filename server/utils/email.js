@@ -1,34 +1,15 @@
-import nodemailer from 'nodemailer'
-import { lookup } from 'dns'
-import { promisify } from 'util'
+import { Resend } from 'resend'
 
-const lookupAsync = promisify(lookup)
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-async function createTransporter() {
-  const smtpHost = await lookupAsync('smtp.gmail.com').then(r => r.address).catch(() => 'smtp.gmail.com')
-  return nodemailer.createTransport({
-    host: smtpHost,
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS?.replace(/\s/g, ''),
-    },
-    tls: {
-      rejectUnauthorized: false,
-      servername: 'smtp.gmail.com',
-    },
-  })
-}
-
-const transporter = await createTransporter()
+const FROM = 'My-Course <onboarding@resend.dev>'
+const CLIENT_URL = process.env.CLIENT_URL || 'https://my-courses-production.up.railway.app'
 
 export async function sendVerificationEmail(to, token) {
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
-  const link = `${clientUrl}/verify-email?token=${token}`
+  const link = `${CLIENT_URL}/verify-email?token=${token}`
 
-  await transporter.sendMail({
-    from: `"My-Course" <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from: FROM,
     to,
     subject: 'Подтвердите ваш email — My-Course',
     html: `
@@ -45,11 +26,10 @@ export async function sendVerificationEmail(to, token) {
 }
 
 export async function sendPasswordResetEmail(to, token) {
-  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
-  const link = `${clientUrl}/reset-password?token=${token}`
+  const link = `${CLIENT_URL}/reset-password?token=${token}`
 
-  await transporter.sendMail({
-    from: `"My-Course" <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from: FROM,
     to,
     subject: 'Сброс пароля — My-Course',
     html: `
@@ -66,11 +46,17 @@ export async function sendPasswordResetEmail(to, token) {
 }
 
 export async function sendDocumentEmail(to, attachmentPath, courseName) {
-  await transporter.sendMail({
-    from: `"My-Course" <${process.env.GMAIL_USER}>`,
+  const { createReadStream } = await import('fs')
+  const { basename } = await import('path')
+
+  await resend.emails.send({
+    from: FROM,
     to,
     subject: `Заявка на курс: ${courseName}`,
     html: `<p>Во вложении заявка на курс <strong>${courseName}</strong>. Распечатайте, проверьте данные и подпишите.</p>`,
-    attachments: [{ filename: 'zayavka.docx', path: attachmentPath }],
+    attachments: [{
+      filename: basename(attachmentPath),
+      content: createReadStream(attachmentPath),
+    }],
   })
 }
