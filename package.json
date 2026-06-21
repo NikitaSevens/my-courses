@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "server": "node server/index.js",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npx prisma generate",
     "start": "npx prisma migrate deploy && node server/index.js",
     "lint": "eslint .",
     "preview": "vite preview"
