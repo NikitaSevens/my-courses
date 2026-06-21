@@ -23,7 +23,10 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    // В продакшене фронтенд на том же домене — разрешаем
+    if (!origin) return callback(null, true)
+    if (process.env.NODE_ENV === 'production') return callback(null, true)
+    if (allowedOrigins.includes(origin)) return callback(null, true)
     console.warn('CORS блокировка для:', origin)
     return callback(new Error('CORS запрещён'), false)
   },
