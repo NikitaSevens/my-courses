@@ -16,8 +16,7 @@ import documentRoutes from './routes/documents.js'
 const app = express()
 
 const allowedOrigins = [
-  process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null,
-  'https://my-coursesask.netlify.app',
+  process.env.CLIENT_URL,
   'http://localhost:3000',
   'http://localhost:5173',
 ].filter(Boolean)
