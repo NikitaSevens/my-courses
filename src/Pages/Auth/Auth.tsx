@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
-  LogIn, UserPlus, KeyRound, Mail, Lock, Eye, EyeOff,
+  LogIn, UserPlus, Mail, Lock, Eye, EyeOff,
   ArrowRight, ArrowLeft, Check, AlertCircle,
   MailCheck, MailOpen, CheckCircle, User, X, Headphones,
 } from 'lucide-react'
