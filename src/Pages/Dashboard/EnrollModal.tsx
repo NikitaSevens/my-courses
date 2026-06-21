@@ -542,19 +542,19 @@ export default function EnrollModal({ course, onClose, onSuccess }: Props) {
       </div>
 
       {/* Footer */}
-      <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', gap: 10, justifyContent: 'space-between' }}>
+      <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)', display: 'flex', gap: 10, flexShrink: 0 }}>
         {step === 2 ? (
-          <button className="btn btn-ghost" onClick={() => setStep(1)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-ghost" onClick={() => setStep(1)} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 52, paddingInline: 20, flexShrink: 0 }}>
             <ChevronLeft size={17} /> Назад
           </button>
         ) : <div />}
 
         {step === 1 ? (
-          <button className="btn btn-primary" onClick={() => { if (validateStep1()) setStep(2) }} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-primary" onClick={() => { if (validateStep1()) setStep(2) }} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 52, flex: 1, justifyContent: 'center', fontSize: 16 }}>
             Далее <ChevronRight size={17} />
           </button>
         ) : (
-          <button className="btn btn-primary" onClick={handleSubmit} disabled={submitting} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={submitting} style={{ display: 'flex', alignItems: 'center', gap: 6, height: 52, flex: 1, justifyContent: 'center', fontSize: 16 }}>
             {submitting ? <><span className="spin" /> Отправка…</> : <><CheckCircle size={16} /> Отправить заявку</>}
           </button>
         )}

@@ -293,7 +293,6 @@ function ForgotScreen({ goTo, setForgotEmail }: { goTo: (s: Screen) => void; set
       <button className="back-btn" onClick={() => goTo('login')}>
         <ArrowLeft size={17} /> Назад ко входу
       </button>
-      <span className="view__eyebrow"><KeyRound size={17} /> Восстановление</span>
       <h1 className="view__h1">Забыли пароль?</h1>
       <p className="view__lead">Укажите email — пришлём ссылку для сброса пароля.</p>
 
