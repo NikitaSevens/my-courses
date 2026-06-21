@@ -34,18 +34,11 @@ router.post('/register', async (req, res) => {
       firstName,
       lastName,
       middleName,
-      verificationToken,
-      verificationTokenExpiry,
+      isEmailVerified: true,
     },
   })
 
-  try {
-    await sendVerificationEmail(email, verificationToken)
-  } catch (err) {
-    console.error('Ошибка отправки письма:', err.message)
-  }
-
-  res.status(201).json({ message: 'Регистрация успешна. Проверьте почту для подтверждения email.' })
+  res.status(201).json({ message: 'Регистрация успешна. Теперь вы можете войти.' })
 })
 
 // GET /auth/verify-email?token=...
@@ -88,9 +81,7 @@ router.post('/login', async (req, res) => {
     return res.status(403).json({ error: 'Ваш аккаунт заблокирован. Обратитесь к администратору на эту почту loknoi729@gmail.com.' })
   }
 
-  if (!user.isEmailVerified) {
-    return res.status(403).json({ error: 'Подтвердите email перед входом' })
-  }
+  // Email verification temporarily disabled
 
   const payload = { id: user.id, email: user.email, role: user.role }
   const accessToken = generateAccessToken(payload)
