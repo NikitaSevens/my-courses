@@ -19,8 +19,20 @@ export function generateDocxFromTemplate(data, outputPath) {
     templateFile = "grown-human.docx";
   }
 
+  // Normalize fields so all template vars are always defined
+  const templateData = {
+    ...data,
+    courseName: data.courseName || data.course || "",
+    startDate: data.startDate || "",
+    endDate: data.endDate || "",
+    duration: data.duration || "",
+    courseFormat: data.courseFormat || "",
+    customAddress: data.customAddress || data.adress || data.passportAddress || "",
+    adress: data.adress || data.customAddress || data.passportAddress || "",
+  };
+
   const templatePath = path.join(__dirname, "../templates", templateFile);
-  const content = fs.readFileSync(templatePath, "binary");
+  const content = fs.readFileSync(templatePath); // Buffer — сохраняет UTF-8 корректно
   const zip = new PizZip(content);
 
   const doc = new Docxtemplater(zip, {
@@ -33,7 +45,7 @@ export function generateDocxFromTemplate(data, outputPath) {
   });
 
   try {
-    doc.render(data);
+    doc.render(templateData);
   } catch (error) {
     console.error("Ошибка генерации DOCX:", error);
     throw error;

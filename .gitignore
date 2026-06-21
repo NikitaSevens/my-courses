@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+server/generated/
+server/output/
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +26,4 @@ dist-ssr
 *.sw?
 .history/
 .env
+/src/generated/prisma

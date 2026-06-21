@@ -1,52 +1,56 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { api } from '../api/client'
 
-interface AuthContextType {
-  isAuthenticated: boolean;
-  login: (user: string, pass: string) => boolean;
-  logout: () => void;
+interface User {
+  id: number
+  email: string
+  firstName: string
+  lastName: string
+  role: string
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface AuthCtx {
+  user: User | null
+  login: (email: string, password: string) => Promise<void>
+  logout: () => Promise<void>
+  isAuthenticated: boolean
+}
 
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'secret123';
+const Ctx = createContext<AuthCtx | null>(null)
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    // Начальное значение: читаем из localStorage
-    return localStorage.getItem('isAuth') === 'true';
-  });
+function loadUser(): User | null {
+  try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem('isAuth');
-    setIsAuthenticated(stored === 'true');
-  }, []);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(loadUser)
 
-  const login = (user: string, pass: string): boolean => {
-    if (user === ADMIN_USER && pass === ADMIN_PASS) {
-      setIsAuthenticated(true);
-      localStorage.setItem('isAuth', 'true');
-      return true;
-    }
-    return false;
-  };
+  const login = useCallback(async (email: string, password: string) => {
+    const { data } = await api.post('/auth/login', { email, password })
+    localStorage.setItem('accessToken', data.accessToken)
+    localStorage.setItem('refreshToken', data.refreshToken)
+    localStorage.setItem('user', JSON.stringify(data.user))
+    setUser(data.user)
+  }, [])
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('isAuth');
-  };
+  const logout = useCallback(async () => {
+    const refreshToken = localStorage.getItem('refreshToken')
+    try { await api.post('/auth/logout', { refreshToken }) } catch {}
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('user')
+    setUser(null)
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <Ctx.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
       {children}
-    </AuthContext.Provider>
-  );
-};
+    </Ctx.Provider>
+  )
+}
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export function useAuth() {
+  const ctx = useContext(Ctx)
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
+  return ctx
+}

@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  EDITOR
+  ADMIN
+  SUPERADMIN
+}
+
+enum EnrollmentStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  REJECTED
+}
+
+enum DocumentStatus {
+  PENDING
+  SENT
+}
+
+enum CourseFormat {
+  ONLINE
+  OFFLINE
+}
+
+enum CourseAudience {
+  SCHOOL
+  STUDENT
+  ADULT
+}
+
+model User {
+  id                       Int            @id @default(autoincrement())
+  email                    String         @unique
+  password                 String
+  firstName                String
+  lastName                 String
+  middleName               String?
+  phone                    String?
+  birthDate                DateTime?
+  snils                    String?
+  address                  String?
+  role                     Role           @default(USER)
+  isEmailVerified          Boolean        @default(false)
+  isBlocked                Boolean        @default(false)
+  verificationToken        String?        @unique
+  verificationTokenExpiry  DateTime?
+  passwordResetToken       String?        @unique
+  passwordResetTokenExpiry DateTime?
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+
+  enrollments     Enrollment[]
+  documents       Document[]
+  refreshTokens   RefreshToken[]
+}
+
+model Course {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  direction   String
+  format      CourseFormat
+  audience    CourseAudience
+  startDate   DateTime?
+  endDate     DateTime?
+  duration    String?
+  price       Float?
+  oldPrice    Float?
+  minAge      String?
+  certificate String?
+  imageUrl    String?
+  pdfUrl      String?
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  enrollments Enrollment[]
+  documents   Document[]
+}
+
+model Enrollment {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  courseId  Int
+  status    EnrollmentStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Document {
+  id        Int            @id @default(autoincrement())
+  userId    Int
+  courseId  Int
+  fileUrl   String?
+  status    DocumentStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -1,55 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
-* {
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  box-sizing: border-box;
-  color: black;
-}
-
+/* ============================================================
+   My-Course — Design System
+   ============================================================ */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --blue-50:  #F2F6FE;
+  --blue-100: #E5EDFD;
+  --blue-200: #C7D7FA;
+  --blue-300: #9CB8F5;
+  --blue-400: #6B91F0;
+  --blue-500: #4B78F0;
+  --blue-600: #2B5CE6;
+  --blue-700: #1E45C4;
+  --blue-800: #18369B;
+  --blue-900: #15296E;
 
-  color-scheme: light dark;
-  color: rgba(0, 0, 0, 0.87);
-  background-color: rgb(239,242,250);
+  --ink:    #0E1726;
+  --ink-2:  #353D4E;
+  --muted:  #6A7283;
+  --line:   #E7EAF1;
+  --line-2: #EFF2F7;
+  --bg:     #FFFFFF;
+  --bg-soft:#F6F8FC;
+  --bg-tint:#EEF3FE;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r:    18px;
+  --r-lg: 26px;
+  --r-xl: 36px;
+  --r-pill: 999px;
 
-  color: black;
+  --sh-sm:   0 2px 8px rgba(20,41,110,.06);
+  --sh:      0 10px 30px rgba(20,41,110,.08);
+  --sh-md:   0 18px 48px rgba(20,41,110,.12);
+  --sh-blue: 0 14px 34px rgba(43,92,230,.30);
+
+  --maxw: 1200px;
+  --gutter: clamp(20px, 4vw, 64px);
+  --font: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* index.css */
-html, body {
-  color: black;
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+h1,h2,h3,h4 { margin: 0; line-height: 1.08; letter-spacing: -0.02em; font-weight: 800; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
 
-div.u-AhunterSuggestions  {
-  position: absolute;
-  max-width: 499px !important;
-  min-width: 280px !important ;
-  padding: 8px 0 !important;
-  font-size: 14px !important;
-  background-color: rgb(0, 0, 0) !important;
-  color: #333 !important;
-  border: 1px solid #005fcc !important;
-  border-radius: 0 0 6px 6px;
-  border-top: none !important;
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.section { padding-block: clamp(56px, 8vw, 110px); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--blue-600);
 }
+.eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--blue-400); border-radius: 2px; }
+.section-head { max-width: 660px; margin-bottom: clamp(34px, 5vw, 56px); }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head.center .eyebrow::before { display: none; }
+.section-title { font-size: clamp(30px, 4.2vw, 50px); }
+.section-sub { margin-top: 18px; font-size: clamp(16px,1.6vw,19px); color: var(--muted); line-height: 1.55; }
 
-div.u-AhunterSuggestions div {
-  padding: 4px 8px !important;
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  height: 54px; padding-inline: 28px; border-radius: var(--r-pill);
+  font-weight: 700; font-size: 16px; letter-spacing: -0.01em;
+  transition: transform .18s ease, box-shadow .25s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  white-space: nowrap; cursor: pointer; font-family: var(--font); text-decoration: none;
 }
+.btn svg { width: 19px; height: 19px; }
+.btn-primary { background: var(--blue-600); color: #fff; box-shadow: var(--sh-blue); border: none; }
+.btn-primary:hover { background: var(--blue-700); transform: translateY(-2px); box-shadow: 0 18px 40px rgba(43,92,230,.38); }
+.btn-ghost { background: var(--bg); color: var(--ink); border: 1.6px solid var(--line); }
+.btn-ghost:hover { border-color: var(--blue-300); color: var(--blue-700); transform: translateY(-2px); }
+.btn-outline { background: transparent; color: var(--blue-700); border: 1.6px solid var(--blue-200); }
+.btn-outline:hover { border-color: var(--blue-600); background: var(--blue-50); }
+.btn-white { background: #fff; color: var(--blue-700); border: none; }
+.btn-white:hover { transform: translateY(-2px); box-shadow: var(--sh-md); }
+.btn-sm { height: 36px; padding-inline: 16px; font-size: 13px; }
+.btn-lg { height: 60px; padding-inline: 34px; font-size: 17px; }
+.btn-block { width: 100%; justify-content: center; }
 
-div.u-AhunterSuggestions div:hover {
-  background-color: #f5f5f5 !important;
+.spin { width: 18px; height: 18px; border: 2.4px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: _spin .7s linear infinite; display: inline-block; }
+.btn-ghost .spin, .btn-outline .spin { border-color: rgba(0,0,0,.2); border-top-color: var(--blue-600); }
+@keyframes _spin { to { transform: rotate(360deg); } }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding-inline: 12px; border-radius: var(--r-pill);
+  font-size: 13px; font-weight: 700;
+}
+.badge svg { width: 14px; height: 14px; }
+.badge-online { background: var(--blue-100); color: var(--blue-700); }
+.badge-offline { background: #EAF0F6; color: #45566B; }
+.badge-free { background: var(--blue-600); color: #fff; }
+
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+
+.ph {
+  position: relative; overflow: hidden; border-radius: var(--r);
+  background: repeating-linear-gradient(135deg, var(--blue-50), var(--blue-50) 11px, var(--blue-100) 11px, var(--blue-100) 22px);
+  display: flex; align-items: center; justify-content: center;
+}
+.ph span {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px; font-weight: 600; color: var(--blue-700);
+  background: rgba(255,255,255,.78); padding: 5px 11px; border-radius: var(--r-pill);
 }
