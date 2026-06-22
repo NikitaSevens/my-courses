@@ -339,20 +339,23 @@
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   padding: 10px 14px;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   font-size: 15px;
   font-family: var(--font);
-  color: var(--text);
+  color: var(--ink);
   background: #fff;
   transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
+  width: 100%;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   border-color: var(--blue-500);
   box-shadow: 0 0 0 3px var(--blue-100);
 }

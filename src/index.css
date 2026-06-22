@@ -18,15 +18,16 @@
   --muted:  #6A7283;
   --line:   #E7EAF1;
   --line-2: #EFF2F7;
+  --border: #E7EAF1;
   --bg:     #FFFFFF;
   --bg-soft:#F6F8FC;
   --bg-tint:#EEF3FE;
 
-  --r-xs: 8px;
-  --r-sm: 12px;
-  --r:    18px;
-  --r-lg: 26px;
-  --r-xl: 36px;
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r:    9px;
+  --r-lg: 13px;
+  --r-xl: 18px;
   --r-pill: 999px;
 
   --sh-sm:   0 2px 8px rgba(20,41,110,.06);
